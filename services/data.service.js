@@ -68,86 +68,58 @@ let accountDetails={
    })
   }
 
-  const deposit=(req,acno,pswd,amt)=>{
-    if(!req.session.currentUser){ 
-         return {
-            statusCode:401,
-            status:false,
-           message:"Please Log In"
-        }
-    }
+  const deposit=(acno,password,amt)=>{
     var amount=parseInt(amt);
-    let user=accountDetails;
-    if(acno in user){
-        if(pswd==user[acno]["password"]){
-            user[acno]["balance"]+=amount;
-        return{
+    return db.User.findOne({acno,password})
+   .then(user=>{
+     if(!user){
+     return{
+        statusCode:422,
+        status:false,
+        message:"Invalid Credential"
+    }
+    }
+    user.balance+=amount;
+    user.save();
+    return{
             statusCode:200,
             status:true,
-            balance:user[acno]["balance"],
-            message:amount+"credited and new balance is:"+user[acno]["balance"]
+            balance:user.balance,
+            message:amount+"credited and new balance is:"+user.balance
     
         }
-      }
+      })
+    }
       
-      else{
-        return{
-            statusCode:422,
-            status:false,
-            message:"Incorrect Password"
-        }
-      }
-    }
-      else{
-        return{
-            statusCode:422,
-            status:false,
-            message:"Invalid Account"
-        }
-      }
-  }
+     
 
-  const withdraw=(acno,pswd,amt)=>{
+  const withdraw=(acno,password,amt)=>{
     var amount=parseInt(amt);
-    let user=accountDetails;
-    if(acno in user){
-      if(pswd==user[acno]["password"]){
-        if(user[acno]["balance"]>amount){
-          user[acno]["balance"]-=amount;
-          
-          return {
-            statusCode:200,
-            status:true,
-            balance:user[acno]["balance"],
-            message:amount+"debited and new balance is: "+user[acno]["balance"]
-        }
-    }
-        else{
+    return db.User.findOne({acno,password})
+    .then(user=>{
+      if(!user){
           return{
           statusCode:422,
           status:false,
-          message:"Insufficient Balance"
-        }
+          message:"Invalid credential"
       }
     }
-      else{
-       
-        return{
-            statusCode:422,
-            status:false,
-            message:"Incorrect Password"
-        }
-        
-
+    if(user.balance<amount){
+      return{
+        statusCode:422,
+        status:false,
+        message:"Insufficient Balance"
       }
-      }
-      else{
-        return{
-         statusCode:200,
-         status:false,
-         message:"Invalid Account"
-        } 
-      }
+    }
+    user.balance-=amount;
+    user.save();
+    return {
+      statusCode:200,
+      status:true,
+      balance:user.balance,
+      message:amount+"debited and new balance is: "+user.balance
+  }
+})
   }
   module.exports={
       register,
