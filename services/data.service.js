@@ -45,17 +45,20 @@ let accountDetails={
   }
 
  const login=(req,accno,password)=>{
-   var acno=parseInt(accno);
-   console.log(acno)
+  
+  var acno=parseInt(accno);
+   //console.log(acno)
+   
    return db.User.findOne({acno,password})
    .then(user=>{
-     console.log(user)
+     //console.log(user)
      if(user){
       req.session.currentUser=user;
       return {
         statusCode:200,
         status:true,
-        message:"Successfully Login"
+        message:"Successfully Login",
+        name:user.username
       }
      }
      else{
