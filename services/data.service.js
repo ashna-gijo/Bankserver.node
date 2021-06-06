@@ -58,7 +58,8 @@ let accountDetails={
         statusCode:200,
         status:true,
         message:"Successfully Login",
-        name:user.username
+        name:user.username,
+        acno:user.acno
       }
      }
      else{
@@ -96,7 +97,7 @@ let accountDetails={
       
      
 
-  const withdraw=(acno,password,amt)=>{
+  const withdraw=(req,acno,password,amt)=>{
     var amount=parseInt(amt);
     return db.User.findOne({acno,password})
     .then(user=>{
@@ -105,6 +106,13 @@ let accountDetails={
           statusCode:422,
           status:false,
           message:"Invalid credential"
+      }
+    }
+    if(req.session.currentUser!=acno){
+      return{
+        statusCode:422,
+        status:false,
+        message:"Permission Denied"
       }
     }
     if(user.balance<amount){

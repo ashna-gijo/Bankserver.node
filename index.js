@@ -80,7 +80,7 @@ app.post('/deposit',authMiddleware,(req,res)=>{
 });
 //Withdraw
 app.post('/withdraw',authMiddleware,(req,res)=>{
-    dataService.withdraw(req.body.acno,req.body.pswd,req.body.amount)
+    dataService.withdraw(req,req.body.acno,req.body.pswd,req.body.amount)
     .then(result=>{
         res.status(result.statusCode).json(result)
         })
