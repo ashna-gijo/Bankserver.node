@@ -132,9 +132,31 @@ let accountDetails={
   }
 })
   }
+
+  const deleteAccDetails=(acno)=>{
+    return db.User.deleteOne({
+      acno:acno
+    }).then(user=>{
+      if(!user){
+        return{
+          
+          statusCode:422,
+          status:false,
+          message:"Operation failed"
+        }
+      }
+       return{
+        
+         statusCode:200,
+         status:true,
+         message:"Account Number "+acno+" deleted successfully"
+       }
+    })
+  }
   module.exports={
       register,
       login,
       deposit,
-      withdraw
+      withdraw,
+      deleteAccDetails
   }

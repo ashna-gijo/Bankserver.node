@@ -102,6 +102,14 @@ app.delete('/',(req,res)=>{
     res.send("THIS IS A DELETE METHOD");
 });
 
+//DELETE Method
+app.delete('/deleteAccDetails/:acno',authMiddleware,(req,res)=>{
+    dataService.deleteAccDetails(req.params.acno)
+    .then(result=>{
+        res.status(result.statusCode).json(result)
+        })  
+});
+
 app.listen(3000,()=>{
 console.log("server created at port: 3000");
 });
