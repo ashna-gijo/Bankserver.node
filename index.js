@@ -5,7 +5,8 @@ const dataService=require('./services/data.service');
 const app= express();
 
 app.use(cors({
-    origin:' http://localhost:4200',
+    origin:'http://192.168.43.177:8080',
+    //origin:' http://localhost:4200',
     credentials:true
 }))
 app.use(session({
